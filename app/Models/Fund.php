@@ -1032,9 +1032,23 @@ class Fund extends Model
      * @return array
      */
     public function validatorEmployees(bool $force_fetch = true) {
-        return ($force_fetch ? $this->employees_validators() :
+        $employees = ($force_fetch ? $this->employees_validators() :
             $this->employees_validators)
             ->pluck('employees.identity_address')->toArray();
+
+        $externalEmployees = [];
+
+        foreach ($this->organization->external_validators as $external_validator) {
+            $externalEmployees = array_merge(
+                $externalEmployees,
+                $external_validator->employeesOfRole('validation')->pluck('identity_address')->toArray()
+            );
+        }
+
+        return array_merge(
+            $employees,
+            $externalEmployees
+        );
     }
 
     /**
@@ -1062,11 +1076,12 @@ class Fund extends Model
     }
 
     /**
+     * TODO:: delete?
      * Store criteria for newly created fund
      * @param array $criteria
      * @return $this
      */
-    public function makeCriteria(array $criteria)
+    /*public function makeCriteria(array $criteria)
     {
         $this->criteria()->createMany(array_map(function($criterion) {
             return array_only($criterion, [
@@ -1076,7 +1091,7 @@ class Fund extends Model
         }, $criteria));
 
         return $this;
-    }
+    }*/
 
     /**
      * Update criteria for existing fund
@@ -1085,6 +1100,8 @@ class Fund extends Model
      */
     public function updateCriteria(array $criteria)
     {
+        // TODO: limit when have external validators/requests or other relations?
+        // remove criteria not listed in the array
         $this->criteria()->whereNotIn('id', array_filter(
             array_pluck($criteria, 'id'), function($id) {
             return !empty($id);
@@ -1092,16 +1109,48 @@ class Fund extends Model
 
         foreach ($criteria as $criterion) {
             /** @var FundCriterion|null $db_criteria */
-            $data_criteria = array_only($criterion, [
+            $data_criterion = array_only($criterion, [
                 'record_type_key', 'operator', 'value', 'show_attachment',
                 'description'
             ]);
 
-            if ($db_criteria = $this->criteria()->find($criterion['id'] ?? null)) {
-                $db_criteria->update($data_criteria);
+            /** @var FundCriterion $db_criterion */
+            if ($db_criterion = $this->criteria()->find($criterion['id'] ?? null)) {
+                $db_criterion->update($data_criterion);
             } else {
-                $this->criteria()->create($data_criteria);
+                $db_criterion = $this->criteria()->create($data_criterion);
             }
+
+            if (isset($criterion['validators']) && is_array($criterion['validators'])) {
+                $validators = array_values($criterion['validators']);
+            } else {
+                $validators = [];
+            }
+
+            $current_validators = [];
+
+            foreach ($validators as $validator) {
+                /** @var OrganizationValidator $validator */
+                $validator = $this->organization->organization_validators()->where([
+                    'validator_organization_id' => $validator
+                ])->first();
+
+                $organization_validator_id = $validator->id;
+
+                /** @var FundCriterionValidator $validatorModel */
+                $validatorModel = $db_criterion->fund_criterion_validators()->firstOrCreate(compact(
+                    'organization_validator_id'
+                ), [
+                    'accepted' => $validator->validator_organization
+                        ->validator_auto_accept_funds
+                ]);
+
+                array_push($current_validators, $validatorModel->id);
+            }
+
+            $db_criterion->fund_criterion_validators()->whereNotIn(
+                'fund_criterion_validators.id', $current_validators
+            )->delete();
         }
 
         return $this;

@@ -26,6 +26,8 @@ class FundCriterionResource extends Resource
             'id', 'record_type_key', 'operator', 'value', 'show_attachment',
             'description'
         ])->merge([
+            'validators' => $this->resource->external_validator_organizations
+                ->pluck('validator_organization_id')->toArray(),
             'record_type_name' => $recordTypes[$this->resource->record_type_key],
             'show_attachment'  => $this->resource->show_attachment ? true : false,
         ])->toArray();

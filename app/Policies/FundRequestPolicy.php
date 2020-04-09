@@ -137,9 +137,10 @@ class FundRequestPolicy
         Fund $fund,
         Organization $organization = null
     ) {
-        if (!$this->checkIntegrity($fund, $organization, $request)) {
+        // TODO: Restore
+        /*if (!$this->checkIntegrity($fund, $organization, $request)) {
             return $this->deny('fund_requests.invalid_endpoint');
-        }
+        }*/
 
         // only validators and fund requester may see requests
         if (!in_array($identity_address, $request->fund->validatorEmployees())) {

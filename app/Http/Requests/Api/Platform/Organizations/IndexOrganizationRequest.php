@@ -37,7 +37,11 @@ class IndexOrganizationRequest extends FormRequest
             ],
             'dependency' => ['nullable', new DependencyRule(
                 OrganizationResource::DEPENDENCIES
-            )]
+            )],
+            'is_employee'   => 'nullable|boolean',
+            'is_sponsor'    => 'nullable|boolean',
+            'is_provider'   => 'nullable|boolean',
+            'is_validator'  => 'nullable|boolean',
         ];
     }
 }

@@ -77,7 +77,21 @@ class FundRequest extends Model
         $query = self::query();
 
         if ($organization) {
-            $query->whereIn('fund_id', $organization->funds()->pluck('id'));
+            $funds = array_merge(
+                $funds = Fund::whereHas('criteria.fund_criterion_validators', function(
+                    Builder $builder
+                ) use ($organization) {
+                    $builder->where('accepted', true);
+                    $builder->whereHas('external_validator.validator_organization', function(
+                        Builder $builder
+                    ) use ($organization) {
+                        $builder->where('organizations.id', $organization->id);
+                    });
+                })->get()->pluck('id')->toArray(),
+                $organization->funds()->pluck('id')->toArray()
+            );
+
+            $query->whereIn('fund_id', array_unique($funds));
         }
 
         if ($request->has('q') && $q = $request->input('q')) {

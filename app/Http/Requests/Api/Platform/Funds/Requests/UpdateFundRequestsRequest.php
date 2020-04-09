@@ -31,7 +31,16 @@ class UpdateFundRequestsRequest extends FormRequest
     public function rules()
     {
         $organization = $this->fund_request->fund->organization;
-        $employees = $organization->employeesOfRole('validation');
+
+        $externalEmployees = [];
+        $employees = $organization->employeesOfRole('validation')->pluck('id')->toArray();
+
+        foreach ($organization->external_validators as $external_validator) {
+            $externalEmployees = array_merge(
+                $externalEmployees,
+                $external_validator->employeesOfRole('validation')->pluck('id')->toArray()
+            );
+        }
 
         return [
             'state' => [
@@ -43,7 +52,7 @@ class UpdateFundRequestsRequest extends FormRequest
             ],
             'employee_id' => [
                 'nullable',
-                Rule::in($employees->pluck('id')->toArray())
+                Rule::in(array_values(array_unique(array_merge($employees, $externalEmployees))))
             ]
         ];
     }

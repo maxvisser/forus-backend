@@ -160,6 +160,17 @@ $router->group([
     ]);
 
     $router->resource(
+        'organizations.external-funds',
+        "Api\Platform\Organizations\ExternalFundsController", [
+        'only' => [
+            'index', 'update'
+        ],
+        'parameters' => [
+            'external-funds' => 'fund'
+        ]
+    ]);
+
+    $router->resource(
         'organizations.funds',
         "Api\Platform\Organizations\FundsController", [
         'only' => [
@@ -211,6 +222,11 @@ $router->group(['middleware' => [
     $router->patch(
         'organizations/{organization}/update-business',
         "Api\Platform\OrganizationsController@updateBusinessType"
+    );
+
+    $router->patch(
+        'organizations/{organization}/roles',
+        "Api\Platform\OrganizationsController@updateRoles"
     );
 
     $router->resource(
@@ -329,6 +345,10 @@ $router->group(['middleware' => [
     $router->post(
         'organizations/{organization}/funds/{fund}/top-up',
         "Api\Platform\Organizations\FundsController@topUp");
+
+    $router->patch(
+        'organizations/{organization}/funds/criteria/validate',
+        "Api\Platform\Organizations\FundsController@criteriaValidate");
 
     $router->resource(
         'organizations.funds',
@@ -456,6 +476,17 @@ $router->group(['middleware' => [
         "Api\Platform\Organizations\OfficesController", [
         'only' => [
             'index', 'show', 'store', 'update', 'destroy'
+        ]
+    ]);
+
+    $router->resource(
+        'organizations.validators',
+        "Api\Platform\Organizations\ValidatorOrganizationsController", [
+        'only' => [
+            'index', 'show', 'store', 'destroy'
+        ],
+        'parameters' => [
+            'validators' => 'validator_organization'
         ]
     ]);
 
