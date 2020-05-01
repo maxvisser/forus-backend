@@ -122,7 +122,7 @@ class FundProviderController extends Controller
                 $chat->addMessage(
                     'system',
                     auth_address(),
-                    'Product approved.'
+                    'Aanbieding geaccepteerd.'
                 );
             });
         }
@@ -136,7 +136,7 @@ class FundProviderController extends Controller
                 $chat->addMessage(
                     'system',
                     auth_address(),
-                    'Product declined.'
+                    'Aanbieding afgewezen.'
                 );
             });
         }

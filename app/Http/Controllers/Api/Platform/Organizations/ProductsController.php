@@ -143,7 +143,7 @@ class ProductsController extends Controller
             $chat->addMessage(
                 'system',
                 auth_address(),
-                'Product updated.'
+                'Aanbieding aangepast.'
             );
         });
 
