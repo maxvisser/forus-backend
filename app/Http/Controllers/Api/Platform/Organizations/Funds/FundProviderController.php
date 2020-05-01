@@ -9,10 +9,12 @@ use App\Http\Requests\Api\Platform\Organizations\Transactions\IndexTransactionsR
 use App\Http\Resources\FundProviderResource;
 use App\Http\Resources\Sponsor\SponsorVoucherTransactionResource;
 use App\Models\Fund;
+use App\Models\FundProviderChat;
 use App\Models\Implementation;
 use App\Models\Organization;
 use App\Http\Controllers\Controller;
 use App\Models\FundProvider;
+use App\Models\Product;
 use App\Models\VoucherTransaction;
 use App\Scopes\Builders\FundProviderQuery;
 use Carbon\Carbon;
@@ -113,10 +115,30 @@ class FundProviderController extends Controller
 
         if ($enable_products !== null) {
             $fundProvider->products()->attach($enable_products);
+
+            $fundProvider->fund_provider_chats()->whereIn(
+                'product_id', $enable_products
+            )->get()->map(function(FundProviderChat $chat) {
+                $chat->addMessage(
+                    'system',
+                    auth_address(),
+                    'Product approved.'
+                );
+            });
         }
 
         if ($disable_products !== null) {
             $fundProvider->products()->detach($disable_products);
+
+            $fundProvider->fund_provider_chats()->whereIn(
+                'product_id', $disable_products
+            )->get()->map(function(FundProviderChat $chat) {
+                $chat->addMessage(
+                    'system',
+                    auth_address(),
+                    'Product declined.'
+                );
+            });
         }
 
         $fundProvider->updateModel([

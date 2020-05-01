@@ -89,4 +89,18 @@ class FundProviderQuery
             });
         });
     }
+
+    /**
+     * @param Builder $query
+     * @param $fund_id
+     * @return Builder
+     */
+    public static function whereAppliedForFundsFilter(
+        Builder $query,
+        $fund_id
+    ) {
+        return $query->where(function(Builder $builder) use ($fund_id) {
+            $builder->whereIn('fund_id', (array) $fund_id);
+        });
+    }
 }

@@ -80,6 +80,16 @@ use Illuminate\Database\Query\Builder;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization whereWebsite($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization whereWebsitePublic($value)
  * @mixin \Eloquent
+ * @property int $is_sponsor
+ * @property int $is_provider
+ * @property int $is_validator
+ * @property int $validator_auto_accept_funds
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization whereIsProvider($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization whereIsSponsor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization whereIsValidator($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Organization whereValidatorAutoAcceptFunds($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\FundProvider[] $fund_providers
+ * @property-read int|null $fund_providers_count
  */
 class Organization extends Model
 {
@@ -209,6 +219,13 @@ class Organization extends Model
         )->where(function(\Illuminate\Database\Eloquent\Builder $builder) {
             $builder->where('fund_providers.allow_products', true);
         });
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function fund_providers() {
+        return $this->hasMany(FundProvider::class);
     }
 
     /**

@@ -68,6 +68,8 @@ use Illuminate\Http\Request;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Product withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Product withoutTrashed()
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\FundProviderChat[] $fund_provider_chats
+ * @property-read int|null $fund_provider_chats_count
  */
 class Product extends Model
 {
@@ -160,6 +162,13 @@ class Product extends Model
         return $this->morphOne(Media::class, 'mediable')->where([
             'type' => 'product_photo'
         ]);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function fund_provider_chats() {
+        return $this->hasMany(FundProviderChat::class);
     }
 
     /**

@@ -21,6 +21,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read \App\Models\Fund $fund
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\FundProviderProduct[] $fund_provider_products
  * @property-read int|null $fund_provider_products_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\FundProviderChat[] $fund_provider_chats
+ * @property-read int|null $fund_provider_chats_count
  * @property-read \App\Models\Organization $organization
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Product[] $products
  * @property-read int|null $products_count
@@ -75,6 +77,13 @@ class FundProvider extends Model
      */
     public function fund_provider_products() {
         return $this->hasMany(FundProviderProduct::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function fund_provider_chats() {
+        return $this->hasMany(FundProviderChat::class);
     }
 
     /**

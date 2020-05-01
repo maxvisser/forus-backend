@@ -42,4 +42,20 @@ class FundQuery
             });
         });
     }
+
+    /**
+     * @param Builder $query
+     * @param $organization_id
+     * @return Builder
+     */
+    public static function whereHasProviderFilter(
+        Builder $query,
+        $organization_id
+    ) {
+        return $query->whereHas('providers.organization', function(
+            Builder $builder
+        ) use ($organization_id) {
+            $builder->whereIn('organizations.id', (array) $organization_id);
+        });
+    }
 }

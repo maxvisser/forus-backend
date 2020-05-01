@@ -32,6 +32,10 @@ use App\Services\FileService\Traits\HasFiles;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FundRequestRecord whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FundRequestRecord whereValue($value)
  * @mixin \Eloquent
+ * @property int|null $fund_criterion_id
+ * @property int|null $employee_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FundRequestRecord whereEmployeeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FundRequestRecord whereFundCriterionId($value)
  */
 class FundRequestRecord extends Model
 {

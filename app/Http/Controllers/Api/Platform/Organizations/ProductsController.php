@@ -6,6 +6,7 @@ use App\Http\Requests\Api\Platform\Organizations\Products\IndexProductRequest;
 use App\Http\Requests\Api\Platform\Organizations\Products\StoreProductRequest;
 use App\Http\Requests\Api\Platform\Organizations\Products\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
+use App\Models\FundProviderChat;
 use App\Models\Organization;
 use App\Models\Product;
 use App\Http\Controllers\Controller;
@@ -135,6 +136,16 @@ class ProductsController extends Controller
         ]), [
             'total_amount' => $unlimited_stock ? 0 : $total_amount
         ]));
+
+        $product->fund_provider_chats()->get()->each(function(
+            FundProviderChat $chat
+        ) {
+            $chat->addMessage(
+                'system',
+                auth_address(),
+                'Product updated.'
+            );
+        });
 
         $product->updateSoldOutState();
 

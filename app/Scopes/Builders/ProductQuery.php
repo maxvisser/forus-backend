@@ -21,7 +21,7 @@ class ProductQuery
                 $builder->whereIn('fund_id', (array) $fund_id);
             });
 
-            $builder->orWhereHas('organization.organization_funds', function(
+            $builder->orWhereHas('organization.fund_providers', function(
                 Builder $builder
             ) use ($fund_id) {
                 $builder->where([
@@ -60,6 +60,21 @@ class ProductQuery
         }
 
         return $query->whereIn('product_category_id', $productCategories);
+    }
+
+    /**
+     * @param Builder $query
+     * @param $fund_id
+     * @return Builder
+     */
+    public static function appliedForFundsFilter(Builder $query, $fund_id) {
+        return $query->where(function(Builder $builder) use ($fund_id) {
+            $builder->whereHas('fund_providers', function(
+                Builder $builder
+            ) use ($fund_id) {
+                $builder->whereIn('fund_id', (array) $fund_id);
+            });
+        });
     }
 
     /**
