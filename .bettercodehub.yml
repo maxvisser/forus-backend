@@ -1,4 +1,4 @@
-component_depth: 15
+component_depth: 5
 languages:
 - php
 exclude:
@@ -6,4 +6,5 @@ exclude:
 - /database/.*
 - /config/.*
 - /bootstrap/.*
+- /app/Models/.*
 - .*/_ide_helper\.php
