@@ -2,6 +2,7 @@ component_depth: 1
 languages:
 - php
 exclude:
+- /app/helpers.php
 - /app/Mail/.*
 - /app/Services/Forus/Notification/NotificationService.php
 - /app/Exports/.*
