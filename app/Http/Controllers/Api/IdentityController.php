@@ -29,7 +29,7 @@ class IdentityController extends Controller
     protected $recordRepo;
 
     /**
-     * IdentityController constructor.lol
+     * IdentityController constructor
      */
     public function __construct() {
         $this->mailService = resolve('forus.services.notification');
