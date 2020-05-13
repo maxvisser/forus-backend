@@ -1,21 +1,7 @@
-component_depth: 6
+component_depth: 1
 languages:
 - php
 exclude:
-- /app/Console/.*
-- /app/Events/.*
-- /app/Exceptions/.*
-- /app/Exports/.*
-- /app/Listeners/.*
-- /app/Mail/.*
-- /app/Media/.*
-- /app/Models/.*
-- /app/Policies/.*
-- /app/Providers/.*
-- /app/Repositories/.*
-- /app/Rules/.*
-- /app/Services/.*
-- /app/Traits/.*
 - /resources/.*
 - /database/.*
 - /routes/.*
