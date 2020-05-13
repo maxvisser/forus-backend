@@ -107,6 +107,62 @@ class IdentityController extends Controller
         return response()->json(null, 201);
     }
 
+     /**
+     * Create new identity (registration)
+     *
+     * @param IdentityStoreRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function store(
+        IdentityStoreRequest $request
+    ) {
+        $this->middleware('throttle', [10, 1 * 60]);
+
+        // client type, key and primary email
+        $clientKey = implementation_key();
+        $clientType = client_type();
+        $primaryEmail = $request->input('email', $request->input(
+            'records.primary_email'
+        ));
+
+        // build records list and remove bsn and primary_email
+        $records = collect($request->input('records', []));
+        $records = $records->filter(function($value, $key) {
+            return !empty($value) && !in_array($key, ['bsn', 'primary_email']);
+        })->toArray();
+
+        // make identity and exchange_token
+        $identityAddress = $this->identityRepo->makeByEmail($primaryEmail, $records);
+        $identityProxy = $this->identityRepo->makeIdentityPoxy($identityAddress);
+        $exchangeToken = $identityProxy['exchange_token'];
+        $isMobile = in_array($clientType, config('forus.clients.mobile'));
+
+        $queryParams = sprintf("?%s", http_build_query(array_merge(
+            $request->only('target'), [
+                'client_type' => $clientType,
+                'implementation_key' => $clientKey,
+                'is_mobile' => $isMobile ? 1 : 0,
+            ]
+        )));
+
+        // build confirmation link
+        $confirmationLink = url(sprintf(
+            '/api/v1/identity/proxy/confirmation/redirect/%s%s',
+            $exchangeToken,
+            $queryParams
+        ));
+
+        // send confirmation email
+        $this->mailService->sendEmailConfirmationLink(
+            $primaryEmail,
+            Implementation::emailFrom(),
+            $confirmationLink
+        );
+
+        return response()->json(null, 201);
+    }   
+    
     /**
      * Validate email for registration, format and if it's already in the system
      *
