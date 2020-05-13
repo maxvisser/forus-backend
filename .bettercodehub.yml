@@ -1,7 +1,8 @@
-component_depth: 1
+component_depth: 6
 languages:
 - php
 exclude:
+- /app/Models/.*
 - /resources/.*
 - /database/.*
 - /routes/.*
