@@ -1,4 +1,4 @@
-component_depth: 5
+component_depth: 15
 languages:
 - php
 exclude:
