@@ -2,10 +2,11 @@ component_depth: 7
 languages:
 - php
 exclude:
-- /resources/lang/.*
+- /resources/.*
 - /database/.*
+- /routes/.*
 - /config/.*
 - /bootstrap/.*
-- /app/Policies/.*
-- /app/Models/.*
+- /storage/.*
+- /public/.*
 - .*/_ide_helper\.php
