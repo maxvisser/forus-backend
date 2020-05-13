@@ -6,5 +6,6 @@ exclude:
 - /database/.*
 - /config/.*
 - /bootstrap/.*
+- /app/Policies/.*
 - /app/Models/.*
 - .*/_ide_helper\.php
