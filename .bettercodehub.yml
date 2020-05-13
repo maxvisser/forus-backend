@@ -3,6 +3,7 @@ languages:
 - php
 exclude:
 - /app/Exports/.*
+- /app/Http/Resources/*
 - /resources/.*
 - /database/.*
 - /routes/.*
