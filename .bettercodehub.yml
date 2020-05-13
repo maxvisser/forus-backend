@@ -3,6 +3,7 @@ languages:
 - php
 exclude:
 - /resources/lang/.*
+- /database/.*
 - /config/.*
 - /bootstrap/.*
 - .*/_ide_helper\.php
