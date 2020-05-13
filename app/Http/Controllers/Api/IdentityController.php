@@ -109,7 +109,7 @@ class IdentityController extends Controller
 
      /**
      * Create new identity (registration)
-     *
+     * lol
      * @param IdentityStoreRequest $request
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
